@@ -2,18 +2,27 @@
 
 ## PR Checklist
 
-- [ ] Has Pytest style unit tests
-- [ ] Code is [Flake 8](http://flake8.pycqa.org/en/latest/) compliant
-- [ ] New features are documented, with examples if plot related
-- [ ] Documentation is sphinx and numpydoc compliant
-- [ ] Added an entry to doc/users/next_whats_new/ if major new feature (follow instructions in README.rst there)
-- [ ] Documented in doc/api/api_changes.rst if API changed in a backward-incompatible way
+- [ ] Has Pytest style unit tests (and `pytest lib/matplotlib/tests` passes)
+- [ ] Code is [Flake 8](http://flake8.pycqa.org/en/latest/) compliant (run
+  `flake8` on changed files to check)
+- [ ] New features (if any) are documented, with examples if plot related
+- [ ] Documentation is sphinx and numpydoc compliant (the docs should
+  [build](https://matplotlib.org/devel/documenting_mpl.html#building-the-docs)
+  without error)
+- [ ] New documentation conforms to matplotlib style conventions. (If you have
+  `flake8-docstrings` and `pydocstyle<4` installed, run
+  `flake8 --docstring-convention=all` on changed files to check).
+- [ ] Added an entry to doc/users/next\_whats\_new/ if major new feature
+  (follow instructions in README.rst there)
+- [ ] Documented in doc/api/api\_changes\_[VERSION] if API changed in a
+  backward-incompatible way (follow instructions in README.rst there)
 
 <!--
 Thank you so much for your PR!  To help us review your contribution, please
 consider the following points:
 
-- A development guide is available at https://matplotlib.org/devdocs/devel/index.html.
+- A development guide is available at
+  https://matplotlib.org/devdocs/devel/index.html.
 
 - Help with git and github is available at
   https://matplotlib.org/devel/gitwash/development_workflow.html.
