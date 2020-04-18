@@ -280,10 +280,18 @@ class RendererPS(_backend_pdf_ps.RendererPDFPSBase):
         """
         return self.image_magnification
 
-    def draw_image(self, gc, x, y, im, transform=None):
+    def option_true_bbox_image(self):
+        return True
+
+    def draw_image(self, gc, x, y, im, transform=None, true_size=None):
         # docstring inherited
 
         h, w = im.shape[:2]
+        if h == 0 or w == 0:
+            return
+        if true_size is not None:
+            w, h = true_size
+
         imagecmd = "false 3 colorimage"
         data = im[::-1, :, :3]  # Vertically flipped rgb values.
         # data.tobytes().hex() has no spaces, so can be linewrapped by relying
@@ -292,12 +300,14 @@ class RendererPS(_backend_pdf_ps.RendererPDFPSBase):
 
         if transform is None:
             matrix = "1 0 0 1 0 0"
-            xscale = w / self.image_magnification
-            yscale = h / self.image_magnification
+            if true_size is None:
+                xscale = w / self.image_magnification
+                yscale = h / self.image_magnification
+            else:
+                xscale = 1.0
+                yscale = 1.0
         else:
             matrix = " ".join(map(str, transform.frozen().to_values()))
-            xscale = 1.0
-            yscale = 1.0
 
         bbox = gc.get_clip_rectangle()
         clippath, clippath_trans = gc.get_clip_path()
