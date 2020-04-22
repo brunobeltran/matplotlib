@@ -1,0 +1,6 @@
+Okay, after struggling for a little longer trying to make the test suite pass. I've realized that the *real* issue is that the different subclasses of `_ImageBase` all have heterogeneous ways of figuring out their true extents in the figure.
+
+If I trawl through the `.make_image` method of each `_ImageBase` subclass, it quickly starts to look like the simplest solution to the current problem might be to define, in `_ImageBase` directly:
+
+```
+def make_image(self, renderer, magnification=1.0, unsampled=False):

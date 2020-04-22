@@ -54,6 +54,10 @@ _interpd_ = {
 interpolations_names = set(_interpd_)
 
 
+def _empty_composite_image():
+    np.empty((0, 0, 4), dtype=np.uint8), 0, 0
+
+
 def composite_images(images, renderer, magnification=1.0):
     """
     Composite a number of RGBA images into one.  The images are
@@ -81,7 +85,7 @@ def composite_images(images, renderer, magnification=1.0):
         in the output figure.
     """
     if len(images) == 0:
-        return np.empty((0, 0, 4), dtype=np.uint8), 0, 0
+        return _empty_composite_image()
 
     parts = []
     bboxes = []
@@ -95,7 +99,7 @@ def composite_images(images, renderer, magnification=1.0):
                 Bbox([[x, y], [x + data.shape[1], y + data.shape[0]]]))
 
     if len(parts) == 0:
-        return np.empty((0, 0, 4), dtype=np.uint8), 0, 0
+        return _empty_composite_image()
 
     bbox = Bbox.union(bboxes)
 
@@ -108,6 +112,42 @@ def composite_images(images, renderer, magnification=1.0):
                         resample=False, alpha=alpha)
 
     return output, bbox.x0 / magnification, bbox.y0 / magnification
+
+def composite_images_bbox(images, renderer):
+    if len(images) == 0:
+        return _empty_composite_image()
+    magnification = renderer.get_image_magnification()
+    parts = []
+    bboxes = []
+    pixel_boxes = []
+    for image in images:
+        data, x, y, _ = image.make_image(renderer, magnification)
+        if data is not None:
+            parts.append(data)
+            bboxes.append(image.get_window_extent(renderer))
+            pixel_boxes.append(
+                Bbox([[x, y], [x + data.shape[1], y + data.shape[0]]]))
+
+    if len(parts) == 0:
+        return _empty_composite_image()
+
+    window_extent = Bbox.union(bboxes)
+    output_pixels = Bbox.union(pixel_boxes)
+
+    output = np.zeros((int(output_pixels.height), int(output_pixels.width), 4),
+                      dtype=np.uint8)
+
+    for i, data in enumerate(parts):
+        pix_box = pixel_boxes[i]
+        alpha = images[i]._get_scalar_alpha()
+        trans = Affine2D().translate(pix_box.x0 - output_pixels.x0,
+                                     pix_box.y0 - output_pixels.y0)
+        _image.resample(data, output, trans, _image.NEAREST,
+                        resample=False, alpha=alpha)
+
+    return output, window_extent
+
+
 
 
 def _draw_list_compositing_images(
@@ -138,12 +178,21 @@ def _draw_list_compositing_images(
             if len(image_group) == 1:
                 image_group[0].draw(renderer)
             elif len(image_group) > 1:
-                data, l, b = composite_images(image_group, renderer, mag)
+                data, bbox = composite_images_bbox(image_group, renderer)
                 if data.size != 0:
                     gc = renderer.new_gc()
                     gc.set_clip_rectangle(parent.bbox)
                     gc.set_clip_path(parent.get_clip_path())
-                    renderer.draw_image(gc, round(l), round(b), data)
+                    if renderer.option_scale_image():
+                        # the work normally done by _input_to_output_scale must
+                        # be done by hand here
+                        h, w = data.shape[:2]
+                        trans = Affine2D().scale(bbox.width/w, bbox.height/h)
+                        renderer.draw_image(
+                            gc, bbox.x0, bbox.y0, data, transform=trans)
+                    else:
+                        renderer.draw_image(
+                            gc, round(bbox.x0), round(bbox.y0), data)
                     gc.restore()
             del image_group[:]
 
@@ -602,6 +651,20 @@ class _ImageBase(martist.Artist, cm.ScalarMappable):
         """
         raise NotImplementedError('The make_image method must be overridden')
 
+    def _draw_unsampled_image(self, renderer, gc):
+        """
+        Draw unsampled image. The renderer should support a draw_image method
+        with scale parameter.
+        """
+        im, l, b, _ = self.make_image(renderer, unsampled=True)
+
+        if im is None:
+            return
+
+        trans = self._input_to_output_scale(im, renderer)
+
+        renderer.draw_image(gc, l, b, im, trans)
+
     def _check_unsampled_image(self):
         """
         Return whether the image is better to be drawn unsampled.
@@ -634,10 +697,15 @@ class _ImageBase(martist.Artist, cm.ScalarMappable):
                 trans = Affine2D().scale(im.shape[1], im.shape[0]) + trans
                 renderer.draw_image(gc, l, b, im, trans)
         else:
-            im, l, b, trans = self.make_image(
+            im, l, b, _ = self.make_image(
                 renderer, renderer.get_image_magnification())
             if im is not None:
-                renderer.draw_image(gc, l, b, im)
+                if renderer.option_scale_image():
+                    trans = self._input_to_output_scale(im, renderer)
+                    renderer.draw_image(gc, l, b, im, transform=trans)
+                else:
+                    renderer.draw_image(gc, l, b, im)
+
         gc.restore()
         self.stale = False
 
@@ -670,6 +738,29 @@ class _ImageBase(martist.Artist, cm.ScalarMappable):
             inside = False
 
         return inside, {}
+
+    def get_window_extent(self, renderer):
+        """Return the bbox in pixel space holding the image."""
+        trans = self.get_transform()
+        # image is created in the canvas coordinate.
+        x1, x2, y1, y2 = self.get_extent()
+        bbox = Bbox(np.array([[x1, y1], [x2, y2]]))
+        transformed_bbox = TransformedBbox(bbox, trans)
+        return transformed_bbox
+
+    def _input_to_output_scale(self, im, renderer):
+        """
+        Scale from pixel units of the final image array to figure units.
+
+        Notes
+        -----
+        The translation is historically done in each renderer's `draw_image`.
+        """
+        output_bbox = self.get_window_extent(renderer)
+        h, w = im.shape[:2]
+        dpi = self.figure.dpi
+
+        return Affine2D().scale(output_bbox.width / w, output_bbox.height / h)
 
     def write_png(self, fname):
         """Write the image to png file *fname*."""

@@ -990,7 +990,6 @@ class RendererSVG(RendererBase):
                 attrib['opacity'] = short_float_fmt(alpha)
 
             flipped = (
-                Affine2D().scale(1.0 / w, 1.0 / h) +
                 transform +
                 Affine2D()
                 .translate(x, y)

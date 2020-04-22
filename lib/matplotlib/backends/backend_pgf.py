@@ -682,7 +682,6 @@ class RendererPgf(RendererBase):
                     r"\pgfsys@transformcm{%f}{%f}{%f}{%f}{%fin}{%fin}" %
                     (tr1 * f, tr2 * f, tr3 * f, tr4 * f,
                      (tr5 + x) * f, (tr6 + y) * f))
-            w = h = 1  # scale is already included in the transform
         interp = str(transform is None).lower()  # interpolation in PDF reader
         writeln(self.fh,
                 r"\pgftext[left,bottom]"

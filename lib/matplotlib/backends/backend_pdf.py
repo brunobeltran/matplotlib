@@ -1896,12 +1896,12 @@ class RendererPdf(_backend_pdf_ps.RendererPDFPSBase):
 
         self.check_gc(gc)
 
-        w = 72.0 * w / self.image_dpi
-        h = 72.0 * h / self.image_dpi
-
         imob = self.file.imageObject(im)
 
         if transform is None:
+            w = 72.0 * w / self.image_dpi
+            h = 72.0 * h / self.image_dpi
+
             self.file.output(Op.gsave,
                              w, 0, 0, h, x, y, Op.concat_matrix,
                              imob, Op.use_xobject, Op.grestore)
@@ -1909,7 +1909,7 @@ class RendererPdf(_backend_pdf_ps.RendererPDFPSBase):
             tr1, tr2, tr3, tr4, tr5, tr6 = transform.frozen().to_values()
 
             self.file.output(Op.gsave,
-                             1, 0, 0, 1, x, y, Op.concat_matrix,
+                             w, 0, 0, h, x, y, Op.concat_matrix,
                              tr1, tr2, tr3, tr4, tr5, tr6, Op.concat_matrix,
                              imob, Op.use_xobject, Op.grestore)
 
