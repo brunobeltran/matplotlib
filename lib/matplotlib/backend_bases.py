@@ -469,12 +469,14 @@ class RendererBase:
             If and only if the concrete backend is written such that
             :meth:`option_scale_image` returns ``True``, an affine
             transformation (i.e., an `.Affine2DBase`) *may* be passed to
-            :meth:`draw_image`.  The translation vector of the transformation
-            is given in physical units (i.e., dots or pixels). Note that
-            the transformation does not override *x* and *y*, and has to be
-            applied *before* translating the result by *x* and *y* (this can
-            be accomplished by adding *x* and *y* to the translation vector
-            defined by *transform*).
+            :meth:`draw_image`. The transformation should specify the
+            normalized coordinate system of the image in array-access
+            orientation. In other words, (0,0) should represent the location of
+            the outside corner of the pixel referred to by ``im[0,0]`` and
+            (1,1) should represent the outside corner of the pixel referred to
+            by ``im[-1,-1]``. Note that the transformation does not override
+            *x* and *y*, and has to be applied *before* translating the result
+            by *x* and *y*.
         """
         raise NotImplementedError
 
