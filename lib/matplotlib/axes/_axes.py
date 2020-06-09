@@ -1342,18 +1342,18 @@ class Axes(_AxesBase):
             If *positions* is 2D, this can be a sequence with length matching
             the length of *positions*.
 
-        linestyles : str or tuple or list of such values, default: 'solid'
+        linestyles : str or tuple or list thereof, default: 'solid'
             Default is 'solid'. Valid strings are ['solid', 'dashed',
             'dashdot', 'dotted', '-', '--', '-.', ':']. Dash tuples
             should be of the form::
 
                 (offset, onoffseq),
 
-            where *onoffseq* is an even length tuple of on and off ink
-            in points.
+            where *onoffseq* is a tuple of on and off ink in points. For
+            exampes, see :doc:`/gallery/lines_bars_and_markers/linestyles`.
 
             If *positions* is 2D, this can be a sequence with length matching
-            the length of *positions*.
+            the length of *positions* containing one valid linestyle per entry.
 
         **kwargs
             Other keyword arguments are line collection properties.  See

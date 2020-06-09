@@ -1121,8 +1121,8 @@ class Line2D(Artist):
 
                   (offset, onoffseq)
 
-              where ``onoffseq`` is an even length tuple of on and off ink
-              in points. See also :meth:`set_dashes`.
+              where ``onoffseq`` is an tuple of on and off ink in points. See
+              also :meth:`set_dashes`.
 
             For examples see :doc:`/gallery/lines_bars_and_markers/linestyles`.
         """
@@ -1257,11 +1257,13 @@ class Line2D(Artist):
         """
         Set the dash sequence.
 
-        The dash sequence is a sequence of floats of even length describing
-        the length of dashes and spaces in points.
+        The dash sequence is a sequence of floats describing the lengths of
+        successive dashes and spaces making up the line (in points). Odd length
+        sequences are iterated through twice.
 
-        For example, (5, 2, 1, 2) describes a sequence of 5 point and 1 point
-        dashes separated by 2 point spaces.
+        For example, (5, 2, 1, 2) describes a sequence of alternating 5 point
+        and 1 point dashes separated by 2 point spaces, and (2, 1, 2) is
+        treated the same as (2, 1, 2, 2, 1, 2).
 
         Parameters
         ----------

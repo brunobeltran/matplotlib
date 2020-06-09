@@ -414,7 +414,8 @@ class Patch(artist.Artist):
 
             (offset, onoffseq)
 
-        where ``onoffseq`` is an even length tuple of on and off ink in points.
+        where ``onoffseq`` is an tuple of on and off ink in points. See
+        :doc:`/gallery/lines_bars_and_markers/linestyles` for examples.
 
         Parameters
         ----------

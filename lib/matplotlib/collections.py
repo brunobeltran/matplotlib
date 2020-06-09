@@ -107,8 +107,8 @@ class Collection(artist.Artist, cm.ScalarMappable):
 
                 (offset, onoffseq),
 
-            where *onoffseq* is an even length tuple of on and off ink lengths
-            in points. For examples, see
+            where *onoffseq* is an tuple of on and off ink lengths in points.
+            For examples, see
             :doc:`/gallery/lines_bars_and_markers/linestyles`.
         capstyle : str, default: :rc:`patch.capstyle`
             Style to use for capping lines for all paths in the collection.
@@ -624,14 +624,15 @@ class Collection(artist.Artist, cm.ScalarMappable):
 
             (offset, onoffseq),
 
-        where ``onoffseq`` is an even length tuple of on and off ink in points.
+        where ``onoffseq`` is an tuple of on and off ink in points.
 
         Parameters
         ----------
-        ls : str or tuple or list thereof
+        str or tuple or list thereof
             Valid values for individual linestyles include {'-', '--', '-.',
-            ':', '', (offset, on-off-seq)}. See `.Line2D.set_linestyle` for a
-            complete description.
+            ':', '', (offset, on-off-seq)}. See `.Line2D.set_dashes` for a
+            complete description and for examples refer to
+            :doc:`/gallery/lines_bars_and_markers/linestyles`.
         """
         try:
             if isinstance(ls, str):
@@ -1507,8 +1508,8 @@ class EventCollection(LineCollection):
 
                 (offset, onoffseq),
 
-            where *onoffseq* is an even length tuple of on and off ink
-            in points.
+            where *onoffseq* is an tuple of on and off ink in points. See
+            :doc:`/gallery/lines_bars_and_markers/linestyles` for examples.
         antialiased : bool or list thereof, default: :rc:`lines.antialiased`
             Whether to use antialiasing for drawing the lines.
         **kwargs
