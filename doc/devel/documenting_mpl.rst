@@ -53,7 +53,7 @@ Installing dependencies
 The documentation for Matplotlib is generated from reStructuredText (ReST_)
 using the Sphinx_ documentation generation tool. To build the documentation
 you will need to (1) set up an appropriate Python environment and (2)
-separately install LaTeX and Graphviz.
+separately install LaTeX, Graphviz, and Inkscape.
 
 To (1) set up an appropriate Python environment for building the
 documentation, you should:
@@ -75,6 +75,7 @@ To (2) set up LaTeX and Graphviz dependencies you should:
 *  install a minimal working LaTeX distribution
 *  install the LaTeX packages cm-super and dvipng
 *  install `Graphviz <http://www.graphviz.org/download>`_
+*  install `Inkscape <https://inkscape.org/>`_
 
 .. note::
 
@@ -111,7 +112,7 @@ it, use
 .. code-block:: sh
 
    make SPHINXOPTS= html
-   
+
 On Windows the arguments must be at the end of the statement:
 
 .. code-block:: bat
@@ -131,8 +132,8 @@ On Windows, either use the format shown above or set options as environment vari
 
 .. code-block:: bat
 
-   set O=-W --keep-going -j4 
-   make html 
+   set O=-W --keep-going -j4
+   make html
 
 .. _writing-rest-pages:
 
