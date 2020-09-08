@@ -4,7 +4,7 @@
 Contributing
 ============
 
-This project is a community effort, and everyone is welcome to
+This project is a grand ol' community effort, and everyone is welcome to
 contribute.  We follow the `Python Software Foundation Code of Conduct
 <coc_>`_ in everything we do.
 
