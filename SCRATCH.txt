@@ -1,0 +1,62 @@
+Renderers:
+AGG (Anti grain graphics)
+Cairo (GTK)
+Cocoa ("macosx")
+GDK (deprecated, GTK 2-)
+
+PS
+PDF
+SVG
+
+Primitives:
+
+Figure has a canvas which has a renderer
+A figure is just a bbox? contains Axes's, which have two (or three) Axis's ea.
+The renderer takes all the information about how to draw paths (joinstyle,
+capstyle, etc), and draws them.
+For bbox's that depend on the renderer, the function is called
+get_window_extents.
+
+Visible elements are "Artist"
+For some subclasses of Artist, capstyle/joinstyle/etc are held.
+collections, markers, lines, patches appear to contain these.
+backend_bases does some work in interpreting these, and obv rcsetup has
+validator functions in it to make sure only a valid option is chosen (and
+defaults)
+
+
+For others, the global default work fine I assume?
+"butt"/"round" - default in backend_bases
+rcsetup has
+"butt"/"round" for dashed lines
+"projecting"/"round" for solid lines
+
+
+
+on line 584 of backends/backend_svg.py (in draw_markers), a manual clip box is
+defined to be of size 72*width, 72*height....this is what gives several of the
+markers their rounded edges...
+
+
+Render pipeline
+something like....get a renderer, call figure.draw(renderer),
+
+For mixedrenderer
+something like, call _draw_list_compositing_images on figure's artists, which
+are the subplots
+then each of those will eventually forward to _axes.base, which itself will
+call _draw_list_compositing_images on the artists that are children of the axis
+which forwards to things like backend_svg's draw_markers,
+
+To draw the colorbar, _draw_list_compositing_images (once you reach the
+relevant axis, and once you reach the relevant child (a QuadMesh)), calls
+QuadMesh.draw(renderer) with the MixedModeRenderer, which finally returns True
+for rasterized, leading to MixedModeRenderer.start_rasterizing()....etc.
+
+MixedModeRenderer has a _renderer set equal to e.g. RendererSVG. So the image
+is placed by backend_svg.draw_image during the call to stop_rasterizing.
+
+"get_extent" -> returns tuple
+"get_extents" -> returns Bbox
+
+
