@@ -2,10 +2,39 @@
 
 import numpy as np
 
-from matplotlib import cbook
+from matplotlib._api.deprecation import deprecated, warn_deprecated
 from matplotlib.path import Path
 
 
+class HatchPath:
+    """
+    Describes a tiling "stamp" that can be used to fill an area.
+
+    .. note::
+
+        Matplotlib allows hatching with any Path contained in the unit square,
+        but typically we want to use a Path that is *doubly* periodic in the
+        unit square.
+    """
+
+    def __init__(self, path, string=''):
+        self._path = path
+        self._hatch_pattern = string
+
+    def get_path(self):
+        return self._path
+
+    def get_hatch_pattern(self):
+        return self._hatch_pattern
+
+    def __add__(self, other):
+        return HatchPath(
+            path=Path.make_compound_path(self.get_path(), other.get_path),
+            string=self.get_hatch_pattern() + other.get_hatch_pattern()
+        )
+
+
+@deprecated("3.4")
 class HatchPatternBase:
     """The base class for a hatch pattern."""
     pass
@@ -16,6 +45,7 @@ class HorizontalHatch(HatchPatternBase):
         self.num_lines = int((hatch.count('-') + hatch.count('+')) * density)
         self.num_vertices = self.num_lines * 2
 
+    @deprecated("3.4")
     def set_vertices_and_codes(self, vertices, codes):
         steps, stepsize = np.linspace(0.0, 1.0, self.num_lines, False,
                                       retstep=True)
@@ -33,6 +63,7 @@ class VerticalHatch(HatchPatternBase):
         self.num_lines = int((hatch.count('|') + hatch.count('+')) * density)
         self.num_vertices = self.num_lines * 2
 
+    @deprecated("3.4")
     def set_vertices_and_codes(self, vertices, codes):
         steps, stepsize = np.linspace(0.0, 1.0, self.num_lines, False,
                                       retstep=True)
@@ -54,6 +85,7 @@ class NorthEastHatch(HatchPatternBase):
         else:
             self.num_vertices = 0
 
+    @deprecated("3.4")
     def set_vertices_and_codes(self, vertices, codes):
         steps = np.linspace(-0.5, 0.5, self.num_lines + 1)
         vertices[0::2, 0] = 0.0 + steps
@@ -74,6 +106,7 @@ class SouthEastHatch(HatchPatternBase):
         else:
             self.num_vertices = 0
 
+    @deprecated("3.4")
     def set_vertices_and_codes(self, vertices, codes):
         steps = np.linspace(-0.5, 0.5, self.num_lines + 1)
         vertices[0::2, 0] = 0.0 + steps
@@ -98,6 +131,7 @@ class Shapes(HatchPatternBase):
                                  len(self.shape_vertices) *
                                  (1 if self.filled else 2))
 
+    @deprecated("3.4")
     def set_vertices_and_codes(self, vertices, codes):
         offset = 1.0 / self.num_rows
         shape_vertices = self.shape_vertices * offset * self.size
@@ -193,7 +227,7 @@ def _validate_hatch_pattern(hatch):
         if invalids:
             valid = ''.join(sorted(valid_hatch_patterns))
             invalids = ''.join(sorted(invalids))
-            cbook.warn_deprecated(
+            warn_deprecated(
                 '3.4',
                 message=f'hatch must consist of a string of "{valid}" or '
                         'None, but found the following invalid values '

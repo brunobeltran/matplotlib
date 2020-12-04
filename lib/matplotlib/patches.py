@@ -28,10 +28,10 @@ from ._types import JoinStyle, CapStyle
 })
 class Patch(artist.Artist):
     """
-    A patch is a 2D artist with a face color and an edge color.
+    A Patch represents a 2D area with a face color and an edge color.
 
-    If any of *edgecolor*, *facecolor*, *linewidth*, or *antialiased*
-    are *None*, they default to their rc params setting.
+    In addition to coloring the face of a patch, one can also tile the face
+    with a `.Hatch` pattern.
     """
     zorder = 1
 
