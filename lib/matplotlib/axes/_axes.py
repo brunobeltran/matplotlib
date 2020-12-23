@@ -4358,9 +4358,11 @@ default: :rc:`scatter.edgecolors`
         if (len(s) not in (1, x.size) or
                 (not np.issubdtype(s.dtype, np.floating) and
                  not np.issubdtype(s.dtype, np.integer))):
+            c_none = '=None' if c is None else ''
             raise ValueError(
-                "s must be a scalar, "
-                "or float array-like with the same size as x and y")
+                "In call to scatter(x, y, s, c" + c_none + ", ...), "
+                "s must be a scalar or float array-like with the same"
+                "size as x and y")
 
         c, colors, edgecolors = \
             self._parse_scatter_color_args(
