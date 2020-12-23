@@ -8,6 +8,7 @@ import warnings
 
 import matplotlib as mpl
 from matplotlib import cbook, rcParams
+from matplotlib._api.deprecation import MatplotlibDeprecationWarning
 from matplotlib.testing.decorators import image_comparison, check_figures_equal
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -149,7 +150,7 @@ def test_figure_legend():
 def test_gca():
     fig = plt.figure()
 
-    with pytest.warns(UserWarning):
+    with pytest.warns(MatplotlibDeprecationWarning):
         # empty call to add_axes() will throw deprecation warning
         assert fig.add_axes() is None
 
