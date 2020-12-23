@@ -113,19 +113,19 @@ os.environ.pop("DISPLAY", None)
 
 autosummary_generate = True
 
-# we should ignore warnings coming from importing deprecated modules for
-# autodoc purposes, as this will disappear automatically when they are removed
-warnings.filterwarnings('ignore', category=MatplotlibDeprecationWarning,
-                        module='importlib',  # used by sphinx.autodoc.importer
-                        message=r'(\n|.)*module was deprecated.*')
+# # we should ignore warnings coming from importing deprecated modules for
+# # autodoc purposes, as this will disappear automatically when they are removed
+# warnings.filterwarnings('ignore', category=MatplotlibDeprecationWarning,
+#                         module='importlib',  # used by sphinx.autodoc.importer
+#                         message=r'(\n|.)*module was deprecated.*')
 
 autodoc_docstring_signature = True
 autodoc_default_options = {'members': None, 'undoc-members': None}
 
-# make sure to ignore warnings that stem from simply inspecting deprecated
-# class-level attributes
-warnings.filterwarnings('ignore', category=MatplotlibDeprecationWarning,
-                        module='sphinx.util.inspect')
+# # make sure to ignore warnings that stem from simply inspecting deprecated
+# # class-level attributes
+# warnings.filterwarnings('ignore', category=MatplotlibDeprecationWarning,
+#                         module='sphinx.util.inspect')
 
 # missing-references names matches sphinx>=3 behavior, so we can't be nitpicky
 # for older sphinxes.
