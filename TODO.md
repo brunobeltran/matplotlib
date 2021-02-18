@@ -1,5 +1,8 @@
 # STACK
 
+0. Send PR to fix deprecation warnings by not deprecating at all, just pass thru
+   and remove from docs
+
 1. Add path with no codes test, and explicit bar call
 
 To improve docs at top level:

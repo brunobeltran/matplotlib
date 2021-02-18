@@ -1,3 +1,7 @@
+GSOD plan:
+EnumOrCustom mix-in class. Want it to act like an Enum but allow creation of new
+"custom" members?
+
 Renderers:
 AGG (Anti grain graphics)
 Cairo (GTK)
